@@ -12,6 +12,13 @@ import PIL
 import numpy as np
 
 
+
+font                   = cv2.FONT_HERSHEY_SIMPLEX
+fontScale              = .75
+fontColor              = (255,0,0)
+thickness              = 2
+lineType               = 2
+
 class Watcher():
 
 
@@ -63,24 +70,25 @@ class Watcher():
     def get_objects(
             self, 
             image:np.ndarray, 
+            target_sizes,
             is_profile:bool=False
         ):
-        if is_profile:
-            start_time = time()
-        self.logger.debug(f"{__class__.__name__}.get_objects()")
-        if not self.model:
-            self.init_model()
+        #if is_profile:
+        #    start_time = time()
+        #self.logger.debug(f"{__class__.__name__}.get_objects()")
+        #if not self.model:
+        #    self.init_model()
 
         # Conform image object
-        shape = None
+        #shape = None
 
         #if isinstance(image, PIL.JpegImagePlugin.JpegImageFile):
         #    shape = image.size[::-1]
-        if isinstance(image, np.ndarray):
+        #if isinstance(image, np.ndarray):
             # Convert to PIL image
             #image = Image.fromarray(image)
-            shape = image.shape[:2]
-        self.logger.debug(f"{__class__.__name__}.Received image of type {type(image)}")
+        #    shape = image.shape[:2]
+        #self.logger.debug(f"{__class__.__name__}.Received image of type {type(image)}")
 
         #if isinstance(image, PIL.JpegImagePlugin.JpegImageFile):
         #    self.logger.debug(f"{__class__.__name__}.get_objects(): Reading a PIL.JpegImagePlugin.JpegImageFile image")
@@ -97,7 +105,6 @@ class Watcher():
             outputs = self.model(**inputs)
 
         # Convert output
-        target_sizes = torch.tensor([shape])
         results = self.image_processor.post_process_object_detection(outputs, threshold=0.9, target_sizes=target_sizes)[0]
 
         # Save all objects fond
@@ -120,19 +127,19 @@ class Watcher():
                 "y2" : box[3],
             })
 
-        if is_profile:
-            # Measure runtime
-            end_time = time()
-            run_time = end_time - start_time
-            
-            model_size = get_model_size(self.model)
-            #get_model_size(self.summarizer)
-            self.logger.info(f'{__class__.__name__}.get_text_summary(): Executed in {(run_time):.4f}s. Used {model_size} of memory.') 
+        #if is_profile:
+        #    # Measure runtime
+        #    end_time = time()
+        #    run_time = end_time - start_time
+        #    
+        #    model_size = get_model_size(self.model)
+        #    #get_model_size(self.summarizer)
+        #    self.logger.info(f'{__class__.__name__}.get_text_summary(): Executed in {(run_time):.4f}s. Used {model_size} of memory.') 
         
         return objects
     
 
-    def overlay_boxes(self, objects:list, image):
+    def overlay_boxes(self, objects:list, image, width, height):
 
         """
         objects : list[dict] : 
@@ -143,15 +150,6 @@ class Watcher():
                         'x2': 380,
                         'y2': 847}
         """
-
-        font                   = cv2.FONT_HERSHEY_SIMPLEX
-        fontScale              = .75
-        fontColor              = (255,0,0)
-        thickness              = 2
-        lineType               = 2
-
-        height = len(image[0])
-        width = len(image)
 
         for index in range(len(objects)):
             obj = objects[index]
