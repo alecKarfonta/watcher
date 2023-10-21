@@ -58,7 +58,7 @@ def main():
     print ("main")
     watcher = Watcher(pre_init=True)
 
-    cam_1_string = 'rtsp://admin:Cody3.1415@192.168.1.104'
+    cam_1_string = 'rtsp://admin:@192.168.1.104'
     
     webcam_stream = WebcamStream(stream_id=cam_1_string) # 0 id for main camera
     webcam_stream.start()
