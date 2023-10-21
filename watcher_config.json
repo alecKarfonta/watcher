@@ -1,0 +1,10 @@
+{
+    "model" : {
+        "description" : "Trained identify objects in an image",
+        "framework" : "huggingface",
+        "name" : "hustvl/yolos-small",
+        "source" : "https://huggingface.co/hustvl/yolos-base",
+        "device" : "cpu",
+        "is_quantize" : false
+    }
+}
