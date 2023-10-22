@@ -226,7 +226,7 @@ class Main(threading.Thread):
             out.release()
 
         out.release()
-cam_1_string = 'rtsp://admin:Cody3.1415@192.168.1.104'
+cam_1_string = 'rtsp://admin:admin@192.168.1.104'
 cam_2_string = 'rtsp://admin:admin@192.168.1.153'
 
 grabber = ImageGrabber(cam_2_string)
