@@ -58,7 +58,7 @@ def main():
     print ("main")
     watcher = Watcher(pre_init=True)
 
-    cam_1_string = 'rtsp://admin:Cody3.1415@192.168.1.104'
+    cam_1_string = 'rtsp://admin:@192.168.1.104'
     
     webcam_stream = WebcamStream(stream_id=cam_1_string) # 0 id for main camera
     webcam_stream.start()
@@ -199,11 +199,6 @@ class Main(threading.Thread):
                     # Pop a frame from the queue
                     self.Currframe = frames.get()
 
-                    if objects:
-                        self.Currframe = watcher.overlay_boxes(objects, self.Currframe, 1080, 1920)
-
-                    #print (f"Read frame: {self.Currframe[0] = }")
-                    out.write(self.Currframe) 
 
                     #frames.task_done()
                     frames_read += 1
@@ -211,12 +206,19 @@ class Main(threading.Thread):
                         print(f"{frames_read} frames in {step} steps")
 
                     
-                    if frames_read % 10 == 0:
+                    if frames_read % 8 == 0:
                         objects = watcher.get_objects(self.Currframe, target_sizes, is_profile=True)
                         if objects:
                             print (f"found {len(objects)} objects")
                         else:
                             print ("No objects found")
+                    
+                    if objects:
+                        self.Currframe = watcher.overlay_boxes(objects, self.Currframe, 1080, 1920)
+
+                    #print (f"Read frame: {self.Currframe[0] = }")
+                    out.write(self.Currframe) 
+
                 if frames_read > 1000:
                     print ("Done. Read 1000 frames.")
                     break
@@ -224,8 +226,10 @@ class Main(threading.Thread):
             out.release()
 
         out.release()
-cam_1_string = 'rtsp://admin:@192.168.1.104'
-grabber = ImageGrabber(cam_1_string)
+cam_1_string = 'rtsp://admin:Cody3.1415@192.168.1.104'
+cam_2_string = 'rtsp://admin:admin@192.168.1.153'
+
+grabber = ImageGrabber(cam_2_string)
 main = Main()
 
 grabber.start()
